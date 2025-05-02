@@ -25,11 +25,23 @@ This project includes a chatbot and a dashboard. The chatbot provides interactiv
    - Create a `.env` file in the root directory.
    - Add the required variables (e.g., API keys, database credentials).
    - Note:- do look for chat-bot [chatwidget.js] and dashboard env and change supabase and gemini ai credentials
+   - at frontend do make two .env files in format
+   - env
+PORT=3000
+SUPABASE_URL=https://cnwidjfncqwueidqjp.supabase.co
+SUPABASE_SERVICE_KEY=--------------
+GEMINI_API_KEY=-----------
+   - env.js =>
+window.ENV = {
+  PORT: "3000",
+  SUPABASE_URL: "https://--------------------.supabase.co",
+  SUPABASE_SERVICE_KEY:"----------------",
+  GEMINI_API_KEY: "-------------------------
+};
+
+
 
 ## Usage
-## Setting up ENV
-
-1. setup env files in chat-bot and dashboard .
 
 ### Running the Chatbot
 1. Start the chatbot server:
