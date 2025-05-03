@@ -28,7 +28,7 @@ This project includes a chatbot and a dashboard. The chatbot provides interactiv
    - at frontend do make two .env files in format
    - env
 PORT=3000
-SUPABASE_URL=https://cnwidjfncqwueidqjp.supabase.co
+SUPABASE_URL=---------------
 SUPABASE_SERVICE_KEY=--------------
 GEMINI_API_KEY=-----------
    - env.js =>
