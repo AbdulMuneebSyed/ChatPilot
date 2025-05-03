@@ -27,20 +27,12 @@ This project includes a chatbot and a dashboard. The chatbot provides interactiv
    - Note:- do look for chat-bot [chatwidget.js] and dashboard env and change supabase and gemini ai credentials
    - at frontend do make two .env files in format
    - env
-PORT=3000
+```PORT=3000
 SUPABASE_URL=---------------
 SUPABASE_SERVICE_KEY=--------------
 GEMINI_API_KEY=-----------
-   - env.js =>
-window.ENV = {
-  PORT: "3000",
-  SUPABASE_URL: "https://--------------------.supabase.co",
-  SUPABASE_SERVICE_KEY:"----------------",
-  GEMINI_API_KEY: "-------------------------
-};
-
-
-
+```
+   - exchange the credentails in frontend
 ## Usage
 
 ### Running the Chatbot
@@ -66,6 +58,26 @@ window.ENV = {
    ```
 
 4. Open the dashboard in your browser (e.g., `http://localhost:4000`).
+
+## How to Embed
+To embed the chatbot widget into your webpage, include the following script in your HTML file. Replace the credentials with your actual values:
+
+```html
+<script src="/chat-widget.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initChatWidget({
+            geminiApiKey: window.ENV.GEMINI_API_KEY, 
+            supabaseUrl: window.ENV.SUPABASE_URL,
+            supabaseKey: window.ENV.SUPABASE_SERVICE_KEY,
+            socketIoUrl: '', // e.g., 'http://localhost:3000'
+            widgetTitle: 'AI Assistant',
+            widgetSubtitle: 'Ask me anything!',
+            primaryColor: '#7857fe'
+        });
+    });
+</script>
+```
 
 ## Screenshots
 
