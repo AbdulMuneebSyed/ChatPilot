@@ -20,7 +20,7 @@ function initChatWidget(config) {
     supabaseKey:
       config.supabaseKey ||
       "",
-    socketIoUrl: config.socketIoUrl || "http://localhost:3000",
+    socketIoUrl: config.socketIoUrl || "https://debales-ai-assessment.onrender.com",
     widgetTitle: config.widgetTitle || "Chat Assistant",
     widgetSubtitle: config.widgetSubtitle || "How can I help you today?",
     primaryColor: config.primaryColor || "#7857fe",
@@ -147,14 +147,12 @@ function supabaseInit(url, key) {
 }
 
 function createChatWidget(config, supabase, socket) {
-  // User data
   const userData = {
     email: null,
     sessionId: generateSessionId(),
     conversationId: null,
   };
 
-  // Track widget state
   const widgetState = {
     isOpen: false,
     isTyping: false,
@@ -169,7 +167,6 @@ function createChatWidget(config, supabase, socket) {
   widgetContainer.dataset.position = config.position;
   document.body.appendChild(widgetContainer);
 
-  // Create the widget toggle button
   const toggleButton = document.createElement("div");
   toggleButton.className = "ai-chat-widget-toggle";
   toggleButton.innerHTML = `
@@ -239,7 +236,6 @@ function createChatWidget(config, supabase, socket) {
     `;
   widgetContainer.appendChild(chatPanel);
 
-  // DOM elements
   const emailForm = chatPanel.querySelector(".ai-chat-widget-email-form");
   const emailInput = chatPanel.querySelector(".ai-chat-widget-email-input");
   const emailSubmit = chatPanel.querySelector(".ai-chat-widget-email-submit");
