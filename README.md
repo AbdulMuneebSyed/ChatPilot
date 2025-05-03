@@ -7,6 +7,10 @@ This project includes a chatbot and a dashboard. The chatbot provides interactiv
 - **Chatbot**: Interactive and user-friendly chatbot for handling queries.
 - **Dashboard**: A graphical interface to monitor and manage data.
 - **Customizable**: Easily configurable for different use cases.
+## Live Demo
+- **ChatBot**: [Click here](https://debaleschatbotdemo.onrender.com/)
+- **Dashboard**: [Click here](https://debalesdashboard.vercel.app/)
+  
 
 ## Installation
 1. Clone the repository:
