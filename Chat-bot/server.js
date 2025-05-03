@@ -6,7 +6,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const { createClient } = require("@supabase/supabase-js");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-
+const path = require("path");
 // Load environment variables
 require("dotenv").config();
 
@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the current directory
-app.use(express.static("."));
+app.use(express.static(path.join(__dirname)));
 
 // Create HTTP server
 const server = http.createServer(app);
