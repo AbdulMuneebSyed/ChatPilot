@@ -95,7 +95,7 @@ async function generateAIResponse(message, apiKey) {
     // Initialize Gemini API with the provided key
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    const prompt = `You are a helpful assistant of . Answer the following question: ${message}`;
+    const prompt = `You are a helpful assistant of . Answer the following question in short: ${message}`;
     // Generate content
     const result = await model.generateContent(message);
     const response = result.response.text();

@@ -68,11 +68,13 @@ window.ENV = {
 4. Open the dashboard in your browser (e.g., `http://localhost:4000`).
 
 ## Screenshots
-### Chatbot
-_Add a screenshot of the chatbot interface here._
 
-### Dashboard
-_Add a screenshot of the dashboard interface here._
+### Chatbot  
+![Chatbot Interface](./public/Screenshot-chatbot.png)
+
+### Dashboard  
+![Dashboard Interface](./public/Screenshot-dashboard.png)
+
 
 ## Contact
 For any questions or feedback, please contact [your-email@example.com].
