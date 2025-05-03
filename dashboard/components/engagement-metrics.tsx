@@ -31,8 +31,8 @@ type DailyMetrics = {
 };
 
 const supabase = createClient(
-  "https://useoorbxepjlwnewlbjl.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZW9vcmJ4ZXBqbHduZXdsYmpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5MjAwNTksImV4cCI6MjA2MTQ5NjA1OX0.pmkl2UIZyNfsTh9oJaKt9h-RmdK-1FWvY7kFE_PqbaY"
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
 export function EngagementMetrics() {
