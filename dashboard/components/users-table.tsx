@@ -9,10 +9,10 @@ import { Badge } from "@/components/ui/badge"
 import { Search, MessageSquare } from "lucide-react"
 import { createClient } from "@supabase/supabase-js";
 const supabase = createClient(
-  process.env.SUPABASE_URL ||
-    "https://useoorbxepjlwnewlbjl.supabase.co",
-  process.env.SUPABASE_ANON_KEY ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZW9vcmJ4ZXBqbHduZXdsYmpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5MjAwNTksImV4cCI6MjA2MTQ5NjA1OX0.pmkl2UIZyNfsTh9oJaKt9h-RmdK-1FWvY7kFE_PqbaY"
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    "",
+ process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    ""
 );
 type Conversation = {
   conversation_id: string | null
