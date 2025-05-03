@@ -70,11 +70,11 @@ window.ENV = {
 ## Screenshots
 
 ### Chatbot  
-![Chatbot Interface](./public/Screenshot-chatbot.png)
+![Chatbot Interface](./dashboard/public/Screenshot-chatbot.png)
 
 ### Dashboard  
-![Dashboard Interface](./public/Screenshot-dashboard.png)
+![Dashboard Interface](./dashboard/public/Screenshot-dashboard.png)
 
 
 ## Contact
-For any questions or feedback, please contact [your-email@example.com].
+For any questions or feedback, please contact [samuneeb786@example.com].
