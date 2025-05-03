@@ -124,7 +124,7 @@ export function UsersTable() {
               <TableHead>Messages</TableHead>
               <TableHead>Response Time</TableHead>
               <TableHead>Feedback</TableHead>
-              <TableHead className="text-right">See Conversation</TableHead>
+              <TableHead className="text-left">See Conversation</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
