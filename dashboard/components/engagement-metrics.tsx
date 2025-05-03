@@ -1,109 +1,249 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, MessageSquare, BarChart } from "lucide-react"
-
-// This would be replaced with actual Supabase data
-type EngagementMetrics = {
-  total_conversations: number
-  total_users: number
-  total_messages: number
-  avg_response_time_ms: number
-  positive_feedback: number
-  negative_feedback: number
-  satisfaction_rate: number
-}
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    "https://useoorbxepjlwnewlbjl.supabase.co",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZW9vcmJ4ZXBqbHduZXdsYmpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5MjAwNTksImV4cCI6MjA2MTQ5NjA1OX0.pmkl2UIZyNfsTh9oJaKt9h-RmdK-1FWvY7kFE_PqbaY"
-);
-export function EngagementMetrics() {
-  const [metrics, setMetrics] = useState<EngagementMetrics>({
-    total_conversations: 0,
-    total_users: 0,
-    total_messages: 0,
-    avg_response_time_ms: 0,
-    positive_feedback: 0,
-    negative_feedback: 0,
-    satisfaction_rate: 0,
-  })
+import { format, parseISO } from "date-fns";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-  const [loading, setLoading] = useState(true)
+// Type for daily metrics
+type DailyMetrics = {
+  day: string;
+  total_conversations: number;
+  total_users: number;
+  total_messages: number;
+  avg_response_time_ms: number | null;
+  positive_feedback: number;
+  negative_feedback: number;
+  satisfaction_rate: number;
+};
+
+const supabase = createClient(
+  "https://useoorbxepjlwnewlbjl.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZW9vcmJ4ZXBqbHduZXdsYmpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5MjAwNTksImV4cCI6MjA2MTQ5NjA1OX0.pmkl2UIZyNfsTh9oJaKt9h-RmdK-1FWvY7kFE_PqbaY"
+);
+
+export function EngagementMetrics() {
+  const [dailyMetrics, setDailyMetrics] = useState<DailyMetrics[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // This would be replaced with actual Supabase fetch
     const fetchEngagementMetrics = async () => {
       try {
-        // Replace with actual Supabase client call
         const { data, error } = await supabase
-          .from('mv_user_engagement')
-          .select('*')
-          .single();
+          .from("mv_user_engagement")
+          .select("*")
+          .order("day", { ascending: false })
+          .limit(7);
 
         if (error) throw error;
-        setMetrics(data)
+
+        setDailyMetrics(data);
       } catch (error) {
-        console.error("Error fetching engagement metrics:", error)
+        setError(
+          error instanceof Error ? error.message : "An unknown error occurred"
+        );
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
+    };
+
+    fetchEngagementMetrics();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    try {
+      return format(parseISO(dateString), "MMM dd");
+    } catch {
+      return dateString;
     }
+  };
 
-    fetchEngagementMetrics()
-  }, [])
+  const chartData = dailyMetrics.map((metric) => ({
+    name: formatDate(metric.day),
+    users: metric.total_users,
+    conversations: metric.total_conversations,
+    messages: metric.total_messages,
+    responseTime: metric.avg_response_time_ms || 0,
+    satisfactionRate: metric.satisfaction_rate,
+    positiveFeedback: metric.positive_feedback,
+    negativeFeedback: metric.negative_feedback,
+  }));
 
-  const formatTime = (ms: number) => {
-    if (ms < 1000) return `${ms}ms`
-    return `${(ms / 1000).toFixed(1)}s`
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background border rounded-md shadow-md p-3">
+          <p className="font-medium">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={index} style={{ color: entry.color }}>
+              {entry.name}: {entry.value.toLocaleString()}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  if (error) {
+    return (
+      <div className="p-4 bg-red-50 text-red-800 rounded-md">
+        <h2 className="text-lg font-semibold">
+          Error loading engagement metrics
+        </h2>
+        <p>{error}</p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h2 className="text-2xl font-bold tracking-tight">User Engagement</h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Users & Conversations */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Messages per User</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Users & Conversations</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {metrics.total_users ? (metrics.total_messages / metrics.total_users).toFixed(1) : "0"}
-            </div>
-            <p className="text-xs text-muted-foreground">Average messages per user</p>
+          <CardContent className="h-80">
+            {loading ? (
+              <Skeleton className="h-full w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Bar dataKey="users" fill="#8884d8" />
+                  <Bar dataKey="conversations" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
 
+        {/* Messages */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Messages per Conversation</CardTitle>
-            <BarChart className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Messages</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {metrics.total_conversations ? (metrics.total_messages / metrics.total_conversations).toFixed(1) : "0"}
-            </div>
-            <p className="text-xs text-muted-foreground">Average message count</p>
+          <CardContent className="h-80">
+            {loading ? (
+              <Skeleton className="h-full w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Bar dataKey="messages" fill="#ff7c43" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
 
+        {/* Response Time */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversations per User</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Response Time (ms)</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {metrics.total_users ? (metrics.total_conversations / metrics.total_users).toFixed(1) : "0"}
-            </div>
-            <p className="text-xs text-muted-foreground">Average conversations</p>
+          <CardContent className="h-80">
+            {loading ? (
+              <Skeleton className="h-full w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="responseTime"
+                    stroke="#2563eb"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Satisfaction Rate */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Satisfaction Rate (%)</CardTitle>
+          </CardHeader>
+          <CardContent className="h-80">
+            {loading ? (
+              <Skeleton className="h-full w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="satisfactionRate"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Feedback Chart */}
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Positive vs Negative Feedback</CardTitle>
+          </CardHeader>
+          <CardContent className="h-80">
+            {loading ? (
+              <Skeleton className="h-full w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Bar dataKey="positiveFeedback" fill="#4ade80" />
+                  <Bar dataKey="negativeFeedback" fill="#f87171" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }
